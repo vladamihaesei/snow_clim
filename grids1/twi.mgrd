@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SAGA_METADATA>
+  <HISTORY>
+    <MODULE>SAGA Wetness Index</MODULE>
+    <OPTION type="double" id="T" name="t">120.000000</OPTION>
+    <OPTION type="grid_system" id="PARAMETERS_GRID_SYSTEM" name="Grid system">
+      <CELLSIZE>1000.000000</CELLSIZE>
+      <XMIN>133500.000000</XMIN>
+      <XMAX>880500.000000</XMAX>
+      <YMIN>225500.000000</YMIN>
+      <YMAX>754500.000000</YMAX>
+      <DATA type="grid" id="DEM" name="Elevation">
+        <FILE>dem.sgrd</FILE>dem.sgrd</DATA>
+    </OPTION>
+    <DATA type="grid" id="DEM" name="Elevation">
+      <FILE>dem.sgrd</FILE>dem.sgrd</DATA>
+  </HISTORY>
+  <SOURCE>
+    <FILE>twi.sgrd</FILE>
+  </SOURCE>
+</SAGA_METADATA>
