@@ -9,12 +9,14 @@ library(grid)
 # ln -s /Volumes/ShareCWaters/
 # ln -s /Volumes/clima/
 
-drive_z <- ifelse(Sys.info()[1] == "Darwin", "~/ShareCWaters/", "~/Z/")
-drive_y <- ifelse(Sys.info()[1] == "Darwin", "~/clima/", "~/Y/")
-#### vectori pentru pentru layout
+drive_z <- ifelse(Sys.info()[1] == "Darwin", "/Volumes/Z/Mac_book/Teza_doctorat/Zapada_doctorat/", "~/Z/")
 
+#### vectori pentru pentru layout
+loc <- read_sf(paste0(drive_z,"shp/localitati_diacritice/localitati.shp"))
+st_crs(loc) <- 3844
+loc <- loc %>% st_transform(4326)
 ### label vecini
-ctrs <-  read_sf("shp/countries.shp") %>% st_transform(4326)
+ctrs <-  read_sf(paste0(drive_z,"shp/countries.shp")) 
 
 ctrs <- ctrs %>% mutate(name_ro = case_when(sovereignt == "Ukraine"~"Ucraina",
                                             sovereignt == "Hungary"~"Ungaria",
@@ -27,10 +29,10 @@ box = c(xmin = 20, ymin = 43.4, xmax = 29.9, ymax = 48.3)
 ctrs <- st_crop(ctrs,box)
 
 ### marea neagra
-sea <-  read_sf("shp/sea.shp") %>% st_transform(4326)
+sea <-  read_sf(paste0(drive_z,"shp/sea.shp")) %>% st_transform(4326)
 
 ###granite vecini
-granite <- read_sf("shp/granite_masca.shp")
+granite <- read_sf(paste0(drive_z,"shp/granite_masca.shp"))
 
 ### scrire sursa
 

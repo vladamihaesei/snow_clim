@@ -1,11 +1,14 @@
 ###
 library(raster,sp)
 library(rgdal)
+
+drive_z <- ifelse(Sys.info()[1] == "Darwin", "/Volumes/Z/Mac_book/Teza_doctorat/Zapada_doctorat/", "~/Z/")
 source("R/krige1_functii.R")
 source("R/source_rasters_kriging.R")
+
 ##incepe citirea
 
-t <- read.csv("tab_export/prima_ultima_zi_fen_GROSZ_1961_2019_juliene.csv", sep = ";")
+t <- read.csv(paste0(drive_z,"tab_export/prima_ultima_zi_fen_GROSZ_1961_2019_juliene.csv"), sep = ";")
 
 t <- t[,c(grep(".med|nume|cod",colnames(t)))]
 
@@ -52,7 +55,7 @@ rst <- raster(tt_reg["tt"])
 
 tt_reg_prj <- projectRaster(rst, crs ="+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0")
 
-writeRaster(tt_reg_prj,"grids_export/prima_zi_medie_strat_cu_zapada.tif")
+writeRaster(tt_reg_prj,paste0(drive_z,"grids_export/prima_zi_medie_strat_cu_zapada.tif"))
 ###############################################################################################
 ###############################################################################################
 ###############################################################################################
@@ -98,7 +101,7 @@ rst <- raster(tt_reg["tt"])
 
 tt_reg_prj <- projectRaster(rst, crs ="+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0")
 
-writeRaster(tt_reg_prj,"grids_export/ultima_zi_medie_strat_cu_zapada.tif")
+writeRaster(tt_reg_prj,paste0(drive_z,"grids_export/ultima_zi_medie_strat_cu_zapada.tif"))
 
 
 

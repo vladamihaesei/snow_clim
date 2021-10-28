@@ -8,10 +8,11 @@ library(RColorBrewer)
 
 source("R/cale_legenda_vectors.R")
 
-rst <- terra::rast("grids_export/prima_zi_medie_strat_cu_zapada.tif")
+rst <- terra::rast(paste0(drive_z,"grids_export/prima_zi_medie_strat_cu_zapada.tif"))
 
 tt_reg_prj <- terra::project(rst, "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0")
 
+judete <- read_sf(paste0(drive_z, "shp/ROU_adm/judete.shp")) %>% st_transform(4326)
 rst.cr <- terra::mask(tt_reg_prj,vect(judete))
 
 ## transform data frame 
@@ -21,9 +22,9 @@ names(plt)[3] <- "tt"
 
 ### legenda 
 
-rmean <- colorRampPalette(brewer.pal(9,"PuBuGn"), interpolate="linear")
+rmean <- colorRampPalette(rev(brewer.pal(9,"PuBuGn")), interpolate="linear")
 brks.mean <- rev(c("<= 20 Sep","30 Sep","10 Oct","20 Oct","31 Oct","10 Nov","20 Nov","30 Nov","10 Dec","20 Dec","=> 20 Dec"))
-cols.mean <- rmean(length(brks.mean) - 1)
+cols.mean <- rmean(length(brks.mean) )
 
 
 ### pentru legenda labels
@@ -49,34 +50,39 @@ pc1 <- ggplot() +
   geom_sf(fill = "#a4b9b9", data = sea, color = "lightgrey", lwd = 0.4)+
   #geom_sf(data = ctrs, color = "black", fill = "lightgrey", size = 0.1)+
   geom_sf(data = granite, color = "black", fill = "lightgrey", size = 0.1)+
-  geom_sf_text(data = filter(ctrs,name_ro !="Slovacia"), aes(label = name_ro), size = 3.5 ,fontface="italic")+
+  
+  
+  geom_sf(aes(geometry = geometry), data = filter(loc,NUMELOC %in% c("BUCURESTI")),pch = 20,  size = 3.5, show.legend = F)+
+  geom_sf(aes(geometry = geometry), data = filter(loc,NUMELOC!="BUCURESTI"),pch = 20, bg = "black", size = 1.9, show.legend = F)+
+  geom_sf_text(mapping = aes(label = NUMELOC), data = loc, nudge_x = -.1, nudge_y = .089, size = 3.3)+
+  
+  
+  
+  #geom_sf_text(data = filter(ctrs,name_ro !="Slovacia"), aes(label = name_ro), size = 3.5 ,fontface="italic")+
   coord_sf(xlim = c(20,29.9), ylim = c(43.5, 48.3), expand = F)+
   scale_x_discrete(expand = c(0, 0)) +
   scale_y_discrete(expand = c(0, 0)) +
   annotation_scale(location = "bl", style = "ticks")+
   labs(x = "",y= "")+
-  
   #geom_sf_text(aes(label = JUDET),colour = "red",size = 3.15,data = judete)+
-  scale_fill_manual(values = cols.mean,labels = rev(c("<= 20 Sep","30 Sep","10 Oct","20 Oct","31 Oct","10 Nov","20 Nov","30 Nov","10 Dec","20 Dec","=> 20 Dec")),  name = F)+
-  
-  annotation_scale(location = "bl", width_hint = 0.24) +
-  annotation_north_arrow(location = "bl", which_north = "true", 
-                         pad_x = unit(0.75, "in"), pad_y = unit(0.5, "in"),
-                         style = north_arrow_fancy_orienteering)+
+  scale_fill_manual(values = cols.mean,labels = rev(c("<= 20 Sep","30 Sep","10 Oct","20 Oct","31 Oct","10 Nov","20 Nov","30 Nov","10 Dec","20 Dec","=> 20 Dec")),  name = "")+
+  annotation_scale(location = "bl", style = "ticks")+
+  labs(x = "",y= "",colour = NULL)+
   theme_bw()+
-  theme(legend.position = c(.9,.8),legend.title = element_text( face = "plain", size= 11), text= element_text(face = "bold", size = 9),
-        legend.key.size = unit(0.4,"cm"),
-        legend.background = element_rect(fill = "gray", color = NA),
+  theme(legend.position = c(.92,.8), text= element_text(face = "bold", size = 9.8),
+        legend.key.size = unit(0.325,"cm"),
+        legend.background = element_rect(fill = "gray"),
         legend.text = element_text(color = "white"),
         legend.direction = "vertical",panel.background = element_rect(fill = "white"),
-        legend.key = element_rect(color = "gray", fill = "black"))+
-  labs(#title = "Șansele unui Revelion+1 Alb (1981-2019)",fontface = "italic", color = "grey22", size = 9,
-    caption = " ©Administratia Națională de Meteorologie")
-
-png("png/prima_zi_medie_strat_zapada.png", width =1800, height = 1400, res =220 )
+        legend.key = element_rect(color = "gray", fill = "black"),
+        #panel.background = element_rect(fill = "#E4E5E9"),#EAF7FA
+        panel.border = element_rect(colour = "black", fill = "transparent"))+
+  annotation_scale(location = "bl", style = "ticks")+
+  annotation_custom(grob)
+png(paste0(drive_z,"png/prima_zi_medie_strat_zapada.png"), width =1800, height = 1400, res =220 )
 pc1
 dev.off()
-system(paste0("convert -trim png/prima_zi_medie_strat_zapada.png  png/ultima_zi_strat_zapada.png"))
+system(paste0("convert -trim"," " ,drive_z,"/png/prima_zi_medie_strat_zapada.png " ,drive_z, "/png/prima_zi_medie_strat_zapada.png"))
 
 ################################################################################################
 ################################################################################################
@@ -84,7 +90,7 @@ system(paste0("convert -trim png/prima_zi_medie_strat_zapada.png  png/ultima_zi_
 ################################################################################################
 ############################## ultima zi grosime strat #########################################
 
-rst <- terra::rast("grids_export/ultima_zi_medie_strat_cu_zapada.tif")
+rst <- terra::rast("/Volumes/Z/Mac_book/Teza_doctorat/Zapada_doctorat/grids_export/ultima_zi_medie_strat_cu_zapada.tif")
 tt_reg_prj <- terra::project(rst, "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0")
 rst.cr <- terra::mask(tt_reg_prj,vect(judete))
 
@@ -109,24 +115,28 @@ plt$tt1[plt$tt > 161 ] <- " > 10 Iun"
 ##### legenda 
 
 rmean <- colorRampPalette(brewer.pal(9,"PuBuGn"), interpolate="linear")
-brks.mean <- rev(c("<= 1 Mar","10 Mar","20 Mar","31 Mar","10 Apr","20 Apr","30 Apr","10 Mai","20 Mai","30 Mai","10 Iun","> 10 Jun"))
+brks.mean <- rev(c("<= 1 Mar","10 Mar","20 Mar","31 Mar","10 Apr","20 Apr","30 Apr","10 Mai","20 Mai","30 Mai","10 Iun","> 10 Iun"))
 cols.mean <- rmean(length(brks.mean))
 
 ### start the ploting  the map  using  ggplot 
 pc1 <- ggplot() +  
   geom_tile(data= plt, aes(x=x, y=y,
-                           fill= factor(tt1,level = rev(c("<= 1 Mar","10 Mar","20 Mar","31 Mar","10 Apr","20 Apr","30 Apr","10 Mai","20 Mai","30 Mai","10 Iun","> 10 Jun")),
-                                        labels = rev(c("<= 1 Mar","10 Mar","20 Mar","31 Mar","10 Apr","20 Apr","30 Apr","10 Mai","20 Mai","30 Mai","10 Iun","> 10 Jun")))))+
+                           fill= factor(tt1,level = rev(c("<= 1 Mar","10 Mar","20 Mar","31 Mar","10 Apr","20 Apr","30 Apr","10 Mai","20 Mai","30 Mai","10 Iun","> 10 Iun")),
+                                        labels = rev(c("<= 1 Mar","10 Mar","20 Mar","31 Mar","10 Apr","20 Apr","30 Apr","10 Mai","20 Mai","30 Mai","10 Iun","> 10 Iun")))))+
   geom_sf(fill="transparent", data = judete)+
   geom_sf(fill = "#a4b9b9", data = sea, color = "lightgrey", lwd = 0.4)+
   #geom_sf(data = ctrs, color = "black", fill = "lightgrey", size = 0.1)+
   geom_sf(data = granite, color = "black", fill = "lightgrey", size = 0.1)+
+  
+  geom_sf(aes(geometry = geometry), data = filter(loc,NUMELOC %in% c("BUCURESTI")),pch = 20,  size = 3.5, show.legend = F)+
+  geom_sf(aes(geometry = geometry), data = filter(loc,NUMELOC!="BUCURESTI"),pch = 20, bg = "black", size = 1.9, show.legend = F)+
+  geom_sf_text(mapping = aes(label = NUMELOC), data = loc, nudge_x = -.1, nudge_y = .089, size = 3.3)+
+  
   #geom_sf_text(data = filter(ctrs,name_ro !="Slovacia"), aes(label = name_ro), size = 3.5 ,fontface="italic")+
   coord_sf(xlim = c(20,29.9), ylim = c(43.5, 48.3), expand = F)+
   scale_x_discrete(expand = c(0, 0)) +
   scale_y_discrete(expand = c(0, 0)) +
-  
-  scale_fill_manual(values = cols.mean,labels = rev(c("<= 1 Mar","10 Mar","20 Mar","31 Mar","10 Apr","20 Apr","30 Apr","10 Mai","20 Mai","30 Mai","10 Iun","> 10 Jun")), name = NULL)+
+  scale_fill_manual(values = cols.mean,labels = rev(c("<= 1 Mar","10 Mar","20 Mar","31 Mar","10 Apr","20 Apr","30 Apr","10 Mai","20 Mai","30 Mai","10 Iun","> 10 Iun")), name = NULL)+
   annotation_scale(location = "bl", style = "ticks")+
   labs(x = "",y= "",colour = NULL)+
   theme_bw()+
@@ -141,11 +151,10 @@ pc1 <- ggplot() +
   annotation_scale(location = "bl", style = "ticks")+
   annotation_custom(grob)
 
-png("png/ultima_zi_medie_strat_zapada.png", width =1800, height = 1400, res =220 )
+png(paste0(drive_z,"png/ultima_zi_medie_strat_zapada.png"), width =1800, height = 1400, res =220 )
 pc1
 dev.off()
-system(paste0("convert -trim png/ultima_zi_medie_strat_zapada.png  png/ultima_zi_medie_strat_zapada.png"))
-
+system(paste0("convert -trim"," " ,drive_z,"/png/ultima_zi_medie_strat_zapada.png " ,drive_z, "/png/ultima_zi_medie_strat_zapada.png"))
 
 
 
