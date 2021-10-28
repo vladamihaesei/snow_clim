@@ -1,23 +1,17 @@
 library(dplyr)
-library(tidyverse)
-library(lubridate)
-library(metR)
+library(sf)
 library(trend)
-library(rgdal)
-library(rgeos)
-library(raster)
-library(elevatr)
 library(rnaturalearth)
 library(climatetools)
-library(sf)
 library(ggrepel)
 library(ggnewscale)
+library(ggspatial)
 library(RColorBrewer)
 
 
-source("legenda_vectors.R")
+source("R/cale_legenda_vectors.R")
 
-tabs <- list.files(path = "tab_export/",pattern = "_years.csv", full.names = T)
+tabs <- list.files(path = paste0(drive_z,"tab_export"),pattern = "_years.csv", full.names = T)
 tabs <- grep("BRUMA",tabs, invert = T, value = T )
 
 rmean <- colorRampPalette(brewer.pal(11,"RdBu"), interpolate="linear")
@@ -59,7 +53,6 @@ for (n in 1:length(tabs)){
 
   kl <- ggplot() + 
       
-    geom_sf(data = reg,color = "#4B4B4B", fill = "transparent", size= 0.55)+
     geom_sf(fill = "#a4b9b9", data = sea, color = "lightgrey", lwd = 0.4)+
     #geom_sf(data = ctrs, color = "black", fill = "lightgrey", size = 0.1)+
     geom_sf(data = granite, color = "black", fill = "lightgrey", size = 0.1)+
@@ -67,29 +60,38 @@ for (n in 1:length(tabs)){
     geom_sf(aes(geometry = geometry), data = filter(loc,NUMELOC!="BUCURESTI"),pch = 20, bg = "black", size = 1.9, show.legend = F)+
     geom_sf_text(mapping = aes(label = NUMELOC), data = loc, nudge_x = -.1, nudge_y = .089, size = 3.3)+
     geom_sf_text(data = filter(ctrs,name_ro !="Slovacia"), aes(label = name_ro), size = 3.5 ,fontface="italic")+
+    
     # make title bold and add space
     
-    geom_point(aes(x=Lon, y=Lat, color= slope.prima), data=t_tr, alpha=1, size=3, color="grey20")+# to get outline
-    geom_point(aes(x=Lon, y=Lat, color=slope.prima), data=t_tr, alpha=1, size=2)+
-    scale_colour_gradientn(colours=c( "blue","white","red"),name = "Nr. zile/\n10 ani",limits = limits = c(-20,20))+ # change color scale
-   
-    guides(fill = guide_colourbar(barwidth = 0.25, barheight = 8.6, title.position="top"))+
+    geom_sf(aes(geometry = geometry), data = filter(t_tr, slope.prima > 0),pch = -as.hexmode("2B07") ,alpha = 1, size =  4, color =  "red", show.legend = F)+# to get outline
+    geom_sf(aes(geometry = geometry), data = filter(t_tr, slope.prima < 0),pch = -as.hexmode("2B07"), alpha =  1, size =  4, color = "blue", show.legend = F)+# to get outline
     
-    # 
-     annotation_scale(location = "bl", style = "ticks")+
-     labs(x = "",y= "")+
-    # 
-     new_scale_colour()+
-     geom_point(data = filter(t_tr, sign.prima > 0.1),aes(x = Lon, y = Lat, color = color = "Nesemnif.\n p-value > 0.1"),
-                size = 0.8,pch = 4, show.legend = T)+
-     scale_color_manual(values = c("black"), name = "")+
+    # geom_point(aes(x=Lon, y=Lat, ), data = filter(t_tr, slope.prima < 0),pch = "⬇" ,alpha=1, size =  sign.prima, color="blue", cex = 3.5)+# to get outline
+    # geom_point(aes(x=Lon, y=Lat, ), data = filter(t_tr, slope.prima == 0),pch = 19 ,alpha=1, size =  sign.prima, color="white", cex = 3.5)+# to get outline
     # 
     # 
-     theme(legend.position = c(.9,.75),
-           panel.background = element_rect(fill = "#E4E5E9"),#EAF7FA
-           panel.border = element_rect(colour = "black", fill = "transparent"),
-           legend.background = element_rect(fill = "white")
-    )
+    # geom_point(aes(x=Lon, y=Lat, color= slope.ultima), data = filter(t_tr, slope.ultima > 0),pch = "⬆" ,alpha=1, size =  sign.ultima,color="red", cex = -3.5)+# to get outline
+    # geom_point(aes(x=Lon, y=Lat, color= slope.ultima), data = filter(t_tr, slope.ultima < 0),pch = "⬇" ,alpha=1, size =  sign.ultima ,color="blue", cex = -3.5)+# to get outline
+    # geom_point(aes(x=Lon, y=Lat, color= slope.prima), data = filter(t_tr, slope.prima == 0),pch = 19 ,alpha=1, size =  sign.ultima, color="white", cex = -3.5)+# to get outline
+    # 
+    
+    #scale_colour_gradientn(colours=c( "blue","white","red"),name = "Nr. zile/\n10 ani",limits = limits = c(-20,20))+ # change color scale
+   
+    #guides(fill = guide_colourbar(barwidth = 0.25, barheight = 8.6, title.position="top"))+
+    
+   annotation_scale(location = "bl", style = "ticks")+
+    labs(x = "",y= "",colour = NULL)+
+    theme_bw()+
+    # theme(legend.position = c(.92,.8), text= element_text(face = "bold", size = 9.8),
+    #       legend.key.size = unit(0.325,"cm"),
+    #       legend.background = element_rect(fill = "gray"),
+    #       legend.text = element_text(color = "white"),
+    #       legend.direction = "vertical",panel.background = element_rect(fill = "white"),
+    #       legend.key = element_rect(color = "gray", fill = "black"),
+    #       #panel.background = element_rect(fill = "#E4E5E9"),#EAF7FA
+    #       panel.border = element_rect(colour = "black", fill = "transparent"))+
+    annotation_scale(location = "bl", style = "ticks")+
+    annotation_custom(grob)
      
     png(paste0("png/harta_trend_prima",nume,".png"), height = 1500, width = 1800, res = 240)
     print(kl)
