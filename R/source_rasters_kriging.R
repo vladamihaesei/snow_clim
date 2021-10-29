@@ -3,7 +3,7 @@ library(raster,sp)
 library(rgdal)
 library(sf)
 
-drive_z <- ifelse(Sys.info()[1] == "Darwin", "/Volumes/Z/Mac_book/Teza_doctorat/Zapada_doctorat/", "~/Z/")
+drive_z <- ifelse(Sys.info()[1] == "Darwin", "/Volumes/Z/Mac_book/Teza_doctorat/Zapada_doctorat/", "~/D/2021/Date_doctorat/Zapada_doctorat/")
 
 statii<-read.table(paste0(drive_z,"tab/statii.csv"), header=TRUE, sep=",", na.strings="NA", strip.white=TRUE)
 dem <- readGDAL(paste0(drive_z,"grids1/dem.tif"))

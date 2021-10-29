@@ -9,12 +9,13 @@ library(grid)
 # ln -s /Volumes/ShareCWaters/
 # ln -s /Volumes/clima/
 
-drive_z <- ifelse(Sys.info()[1] == "Darwin", "/Volumes/Z/Mac_book/Teza_doctorat/Zapada_doctorat/", "~/Z/")
+drive_z <- ifelse(Sys.info()[1] == "Darwin", "/Volumes/Z/Mac_book/Teza_doctorat/Zapada_doctorat/", "~/D/2021/Date_doctorat/Zapada_doctorat/")
 
 #### vectori pentru pentru layout
 loc <- read_sf(paste0(drive_z,"shp/localitati_diacritice/localitati.shp"))
 st_crs(loc) <- 3844
 loc <- loc %>% st_transform(4326)
+rom <- read_sf(paste0(drive_z, "shp/ROU_adm/ROU_adm0.shp")) %>% st_transform(4326)
 ### label vecini
 ctrs <-  read_sf(paste0(drive_z,"shp/countries.shp")) 
 
