@@ -15,10 +15,14 @@ tabs <- list.files(path = paste0(drive_z,"tab_export"),pattern = "_years.csv", f
 tabs <- grep("BRUMA",tabs, invert = T, value = T )
 
 
+tabs <- list.files(path = paste0(drive_z,"tab_export"),pattern = ".csv", full.names = T)
+
+tabs <- tabs[2:3]
 for (n in 1:length(tabs)){
   
+
   print(tabs[n])
-  nume <- strsplit(tabs[n],"/|_")[[1]][16]
+  nume <- strsplit(tabs[n],"/|_|.csv")[[1]][14]
   print(nume)
   t <- read.csv(tabs[n])
   t <- as.data.frame(t)
@@ -26,16 +30,17 @@ for (n in 1:length(tabs)){
   head(t)
   
   #### BRUMA &GROSZ & NINSOARE
-  
-  t_trend <- t %>%
-    group_by(cod,nume) %>% # we group by name and cod to perform the calculation in each station
-    summarise(slope.prima = sens.slope(prima_zi_jul_decalat)$estimates *10,
-              sign.prima = mk.test(prima_zi_jul_decalat)$p.value,
-              slope.ultima = sens.slope(ultima_zi_jul_decalat)$estimates *10,
-              sign.ultima = mk.test(ultima_zi_jul_decalat)$p.value)
-  t_trend$slope.prima_plus <- t_trend$slope.prima*1000000
-  t_trend$slope.ultima_plus <- t_trend$slope.ultima*100000
-  t_tr <- merge(x = t_trend, y = ws[5:8], by.x = "nume",by.y = "NUME", all.x = TRUE)
+  # 
+  # t_trend <- t %>%
+  #   group_by(cod,nume) %>% # we group by name and cod to perform the calculation in each station
+  #   summarise(slope.prima = sens.slope(prima_zi_jul_decalat)$estimates *10,
+  #             sign.prima = mk.test(prima_zi_jul_decalat)$p.value,
+  #             slope.ultima = sens.slope(ultima_zi_jul_decalat)$estimates *10,
+  #             sign.ultima = mk.test(ultima_zi_jul_decalat)$p.value)
+  # t_trend$slope.prima_plus <- t_trend$slope.prima*1000000
+  # t_trend$slope.ultima_plus <- t_trend$slope.ultima*100000
+  # t_tr <- merge(x = t_trend, y = ws[5:8], by.x = "nume",by.y = "NUME", all.x = TRUE)
+  t_tr <- merge(x = t, y = ws[5:8], by.x = "nume",by.y = "NUME", all.x = TRUE)
   
   #t_tr <- st_as_sf(t_tr, coords = c('Lon', 'Lat'), crs = 4326)
   
@@ -49,13 +54,13 @@ for (n in 1:length(tabs)){
     geom_sf_text(data = filter(ctrs,name_ro !="Slovacia"), aes(label = name_ro), size = 3.5 ,fontface="italic")+
     geom_sf(fill = "transparent", data = rom, color = "grey", lwd = 0.4)+
     
-    geom_point(aes(x = Lon-.01, y = Lat, size = slope.prima_plus*10), data = filter(t_tr, slope.prima > 0),pch = -as.hexmode("2B06"), alpha =2,  color =  "red", show.legend = F)+# to get outline
-    geom_point(aes(x = Lon-.01, y = Lat, size = slope.prima_plus*10), data = filter(t_tr, slope.prima < 0),pch = -as.hexmode("2B07"), alpha =2,  color =  "blue", show.legend = F)+# to get outline
+    geom_point(aes(x = Lon-.01, y = Lat, size = slope.prima*10), data = filter(t_tr, slope.prima > 0),pch = -as.hexmode("2B06"), alpha =2,  color =  "red", show.legend = F)+# to get outline
+    geom_point(aes(x = Lon-.01, y = Lat, size = slope.prima*10), data = filter(t_tr, slope.prima < 0),pch = -as.hexmode("2B07"), alpha =2,  color =  "blue", show.legend = F)+# to get outline
     geom_point(aes(x = Lon-.01, y = Lat), data = filter(t_tr, slope.prima == 0),pch = 19 , color =  "grey" ,size = 3., show.legend = F)+# to get outline
     
 
-    geom_point(aes(x = Lon+.08, y = Lat, size = slope.ultima_plus*10), data = filter(t_tr, slope.ultima > 0),pch = -as.hexmode("2B06"), alpha =2,  color =  "red", show.legend = F)+# to get outline
-    geom_point(aes(x = Lon+.08, y = Lat, size = slope.ultima_plus*10), data = filter(t_tr, slope.ultima < 0),pch = -as.hexmode("2B07"), alpha =2,  color =  "blue", show.legend = F)+# to get outline
+    geom_point(aes(x = Lon+.08, y = Lat, size = slope.ultima*10), data = filter(t_tr, slope.ultima > 0),pch = -as.hexmode("2B06"), alpha =2,  color =  "red", show.legend = F)+# to get outline
+    geom_point(aes(x = Lon+.08, y = Lat, size = slope.ultima*10), data = filter(t_tr, slope.ultima < 0),pch = -as.hexmode("2B07"), alpha =2,  color =  "blue", show.legend = F)+# to get outline
     geom_point(aes(x = Lon+.08, y = Lat), data = filter(t_tr, slope.ultima == 0),pch = 19 , color =  "grey" ,size = 3.,  show.legend = F)+# to get outline
 
   

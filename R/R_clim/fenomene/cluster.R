@@ -43,8 +43,8 @@ t1.month$DAT <- paste0(t1.month$DAT, "-01")
 t1.month$DAT <- as.Date(t1.month$DAT)
 t1.month <- t1.month%>% filter(format(DAT,"%m") %in% c("11","12","01","02","03" ))
 
-t1.month  <- t1.month[c(1,4,7,8,9)] %>% pivot_wider(c(COD, NUME,Z), values_from = c(mean_with_zero), names_from = "DAT" )
-t1.month.sc <- t1.month[4:ncol(t1.month)]
+t1.month.l  <- t1.month[c(1,4,5,6,7,8,9)] %>% pivot_wider(c(COD,NUME,Z,Lat,Lon), values_from = c(mean_with_zero), names_from = "DAT" )
+t1.month.sc <- t1.month.l[6:ncol(t1.month.l)]
 t1.month.sc[is.na(t1.month.sc)] <- 0
 t1.month.sc <- scale(t1.month.sc)
 
@@ -54,16 +54,18 @@ pc <- prcomp(t1.month.sc)
 # First for principal components
 comp <- data.frame(pc$x[,1:4])
 
-k <- kmeans(comp, 7, nstart=25, iter.max=1000)
-k
+k <- kmeans(comp, 6, nstart=25, iter.max=1000)
+k$cluster
+
+t1.cluster <- cbind(t1.month.l[1:5],cluster = k$cluster)
+
+coordinates(t1.cluster) <- ~Lon+Lat
+
+cl <- st_as_sf(t1.cluster)
 
 
-
-
-
-
-
-
+ggplot()+
+  geom_sf(data = cl, aes(color = as.character(cluster)))
 
 
 
