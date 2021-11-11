@@ -9,7 +9,7 @@ library(grid)
 # ln -s /Volumes/ShareCWaters/
 # ln -s /Volumes/clima/
 
-drive_z <- ifelse(Sys.info()[1] == "Darwin", "/Volumes/Z/Mac_book/Teza_doctorat/Zapada_doctorat/", "~/D/2021/Date_doctorat/Zapada_doctorat/")
+drive_z <- ifelse(Sys.info()[1] == "Darwin", "/Volumes/Z_vld/Mac_book/Teza_doctorat/Zapada_doctorat/", "~/D/2021/Date_doctorat/Zapada_doctorat/")
 
 #### vectori pentru pentru layout
 loc <- read_sf(paste0(drive_z,"shp/localitati_diacritice/localitati.shp"))

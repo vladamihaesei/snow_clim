@@ -8,7 +8,7 @@ library(pa)
 library(nFactors)
 library(psych)
 
-install.packages("FactoMineR")
+#install.packages("FactoMineR")
 
 library(FactoMineR)
 library(factoextra)
@@ -27,64 +27,85 @@ tmin <- tmin[1:3]
 nebt <- read.csv(paste0(drive_z,"tab/NEBT_ora_6_1961_2019.csv"))
 t <- read.csv(paste0(drive_z,"tab/GROSZ_1961_2019.csv"))
 names(ws)[4] <- "COD"
+t <- t %>%filter(COD!=509940) ### elimina sulina pentru strat de zapada
 t1 <- t %>% left_join(nebt, by = c("COD", "DAT")) %>% left_join(tmin, by = c("COD", "DAT"))%>% left_join(ws[c(2,3,4,5,7,8,9)])
 ### validare cu nebulozitate
 t1$GROSZ[is.na(t1$NEBT)] <- NA # 
 t1$GROSZ[t1$NEBT >= 0 & is.na(t1$GROSZ)] <- 0 # asta e bine
-t1.n <- na.omit(t1)
+t1$DAT <- as.Date(t1$DAT)
+t1.n <- t1 %>% filter(format(DAT, "%m") %in% c("11","12","01","02","03")) %>% na.omit()
 t1.n$DAT <- as.Date(t1.n$DAT)
-t1.month <- t1.n %>% group_by(COD,CMR,JU,NUME,Lat,Lon,Z, format(DAT,"%Y-%m")) %>% summarise(
-                                                                                           mean_with_zero = mean(GROSZ),
-                                                                                           )
 
-t1.month <- na.omit(t1.month)
+####lunare multianuale 
+t1.month <- t1.n %>% group_by(COD,CMR,JU,NUME,Lat,Lon,Z, format(DAT,"%m")) %>% summarise(mean_with_zero = mean(GROSZ),
+                                                                                         mean_no_zero = mean(GROSZ[GROSZ>0]))
+
 names(t1.month)[8] <- "DAT"
-t1.month$DAT <- paste0(t1.month$DAT, "-01")
-t1.month$DAT <- as.Date(t1.month$DAT)
-t1.month <- t1.month%>% filter(format(DAT,"%m") %in% c("11","12","01","02","03" ))
 
-t1.month  <- t1.month[c(1,4,7,8,9)] %>% pivot_wider(c(COD, NUME,Z), values_from = c(mean_with_zero), names_from = "DAT" )
-t1.month.sc <- t1.month[4:ncol(t1.month)]
+t1.month  <- t1.month[c(1,8,9)] %>% pivot_wider(c(COD), values_from = c(mean_with_zero), names_from = "DAT")
+t1.month.sc <- t1.month[2:ncol(t1.month)]
 t1.month.sc[is.na(t1.month.sc)] <- 0
-t1.month.sc <- scale(t1.month.sc)
 
+pc <- prcomp(t1.month.sc, scale. = T)
 
-# Get principal component vectors using prcomp instead of princomp
-pc <- prcomp(t1.month.sc)
+plot(pc)
+plot(pc, type = "l")
 # First for principal components
 comp <- data.frame(pc$x[,1:4])
 
-k <- kmeans(comp, 7, nstart=25, iter.max=1000)
-k
+fviz_nbclust(comp, kmeans, method = "silhouette", print.summary = T)+ labs(subtitle = "Silhouette method")
+k <- kmeans(comp, 4, nstart=25, iter.max=1000)
+##### lunare 
+t1.month.an <- t1.n %>% group_by(COD,CMR,JU,NUME,Lat,Lon,Z, format(DAT,"%Y%m")) %>% summarise(mean_with_zero = mean(GROSZ),
+                                                                                           mean_no_zero = mean(GROSZ[GROSZ>0]))
+names(t1.month.an)[8] <- "DAT"
 
 
+t1.month.an  <- t1.month.an[c(1,8,9)] %>% pivot_wider(c(COD), values_from = c(mean_with_zero), names_from = "DAT")
+t1.month.an.sc <- t1.month.an[2:ncol(t1.month.an)]
+t1.month.an.sc[is.na(t1.month.an.sc)] <- 0
 
+pc <- prcomp(t1.month.an.sc, scale. = T)
+plot(pc)
+plot(pc, type = "l")
+# First for principal components
+comp <- data.frame(pc$x[,1:4])
+### cluster
+fviz_nbclust(comp, kmeans, method = "silhouette", print.summary = T)+ labs(subtitle = "Silhouette method")
+k <- kmeans(comp, 4, nstart=25, iter.max=1000)
 
+######
 
+##### zilnice
 
+t1.n <- t1.n %>% filter(GROSZ != 0)
+t1.n.l <- t1.n[c(1,2,3)]%>% pivot_wider(c(COD), values_from = c(GROSZ), names_from = "DAT" )
+t1.n.l[is.na(t1.n.l)] <- 0
+# Get principal component vectors using prcomp instead of princomp
+pc <- prcomp(t1.n.l, scale = T)
 
+plot(pc)
+plot(pc, type = "l")
+# First for principal components
+comp <- data.frame(pc$x[,1:3])
 
+fviz_nbclust(comp, kmeans, method = "silhouette", print.summary = T)+ labs(subtitle = "Silhouette method")
 
-
-
-
-
-
-
+k <- kmeans(comp, 4, nstart=25, iter.max=1000)
 
 
 
 # # Determine Number of Factors to Extract
-ev <- eigen(cor(t1.month.sc)) # get eigenvalues
-ap <- parallel(subject=nrow(t1.month.sc),var=ncol(t1.month.sc), rep=100, cent=.05)
+ev <- eigen(cor(t1.month.an.sc)) # get eigenvalues
+ap <- parallel(subject=nrow(t1.month.an.sc),var=ncol(t1.month.an.sc), rep=100, cent=.05)
 nS <- nScree(x=ev$values, aparallel=ap$eigen$qevpea)
 plotnScree(nS)
 
 ## method 1 the factor analysis
-factors <- factanal(x = tab, factors = 8,lower = 0.6,rotation = "varimax")
+factors <- factanal(x = t1.n.l, factors = 17,lower = 0.6,rotation = "varimax")
 load1<- factors$loadings
 load.sub <- print(factors$loadings,cutoff = 0.6)
-fs_scores <- factor.scores(tab,load.sub, method = "Thurstone")
+fs_scores <- factor.scores(t1.n.l,load.sub, method = "Thurstone")
 f <- fs_scores$scores
 
 ## method 2 factor analysis
@@ -94,7 +115,6 @@ fac <- fa(df.sub, nfactors= 8,rotate="varimax", fm="pa", lower = 0.6, scores = "
 #### factor scores
 f2 <- fa$scores
 f3 <- fac$scores
-
 
 # Silhouette method 1metoda de a gasi nr optimal de cluster
 png("png/Sillouehte.png",width = 1600, height = 1400, res = 200)
