@@ -35,7 +35,7 @@ for (n in 1:length(tabs)){
               sign.ultima = mk.test(ultima_zi_jul_decalat)$p.value)
   #t_trend$slope.prima_plus <- t_trend$slope.prima
   #t_trend$slope.ultima_plus <- t_trend$slope.ultima
-  t_tr <- merge(x = t_trend, y = ws[5:8], by.x = "nume",by.y = "NUME", all.x = TRUE)
+  t_tr <- merge(x = t_trend, y = ws[5:9], by.x = "nume",by.y = "NUME", all.x = TRUE)
  
   
   #t_tr <- st_as_sf(t_tr, coords = c('Lon', 'Lat'), crs = 4326)
@@ -90,8 +90,16 @@ for (n in 1:length(tabs)){
 
 ############## verificare t 
 
-t.f <- t%>% filter(nume == "Radauti")
-t.f
+t.f <- t_tr%>% filter(sign.prima <= 0.1)
+
+t.f[order(t.f$Z),]
+
+
+
+t.f2 <- t_tr%>% filter(sign.ultima <= 0.1)
+
+t.f2[order(t.f2$Z),]
+
 
 
 
