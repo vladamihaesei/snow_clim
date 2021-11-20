@@ -102,4 +102,8 @@ t.f2[order(t.f2$Z),]
 
 
 
+(nrow(t.f)/nrow(t_tr))*100
+
+(nrow(t.f2)/nrow(t_tr))*100
+
 
