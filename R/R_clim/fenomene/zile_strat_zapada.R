@@ -31,7 +31,6 @@ write.csv(ninsoare.an, paste0(drive_z,"tab_export/nr_zile_strat_zapada.csv"))
 ninsoare.11 <- ninsoare %>%filter(format(DAT,"%m") == "11")%>% mutate(caz = ifelse(ZAPADA >0,1,0),
                                                                       luna = format(DAT,"%m"))%>%group_by(format(DAT,"%Y"),CODGE, NUME,Z, Lat,Lon) %>% summarise(noiembrie = sum(caz))
 
-
 ninsoare.12 <- ninsoare %>%filter(format(DAT,"%m") == "12") %>%mutate(caz = ifelse(ZAPADA >0,1,0),
                                                                       luna = format(DAT,"%m"))%>%group_by(format(DAT,"%Y"),CODGE, NUME,Z, Lat,Lon) %>% summarise(decembrie = sum(caz))
 

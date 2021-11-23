@@ -11,6 +11,7 @@ library(grid)
 
 drive_z <- ifelse(Sys.info()[1] == "Darwin", "/Volumes/Z_vld/Mac_book/Teza_doctorat/Zapada_doctorat/", "~/D/2021/Date_doctorat/Zapada_doctorat/")
 
+drive_y <- ifelse(Sys.info()[1] == "Darwin", "~/clima/", "~/Y/")
 #### vectori pentru pentru layout
 loc <- read_sf(paste0(drive_z,"shp/localitati_diacritice/localitati.shp"))
 st_crs(loc) <- 3844

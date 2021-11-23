@@ -57,15 +57,14 @@ pc1 <- ggplot() +
   #geom_sf(data = ctrs, color = "black", fill = "lightgrey", size = 0.1)+
   geom_sf(data = granite, color = "black", fill = "lightgrey", size = 0.1)+
   
-  geom_sf(aes(geometry = geometry), data = filter(loc,NUMELOC %in% c("BUCURESTI")),pch = 20,  size = .5, show.legend = F)+
-  geom_sf(aes(geometry = geometry), data = filter(loc,NUMELOC!="BUCURESTI"),pch = 20, bg = "black", size = .2, show.legend = F)+
-  geom_sf_text(mapping = aes(label = NUMELOC), data = loc, nudge_x = -.1, nudge_y = .089, size = 1.)+
+  geom_sf(aes(geometry = geometry), data = filter(loc,NUMELOC %in% c("BUCURESTI")),pch = 20,  size = .8, show.legend = F)+
+  geom_sf(aes(geometry = geometry), data = filter(loc,NUMELOC!="BUCURESTI"),pch = 20, bg = "black", size = .7, show.legend = F)+
+  geom_sf_text(mapping = aes(label = NUMELOC), data = loc, nudge_x = -.1, nudge_y = .089, size = 1.2)+
   
   #geom_sf_text(data = filter(ctrs,name_ro !="Slovacia"), aes(label = name_ro), size = 3.5 ,fontface="italic")+
   coord_sf(xlim = c(20,29.9), ylim = c(43.5, 48.3), expand = F)+
   scale_x_discrete(expand = c(0, 0)) +
   scale_y_discrete(expand = c(0, 0)) +
-  annotation_scale(location = "bl", style = "ticks")+
   labs(x = "",y= "")+
   #geom_sf_text(aes(label = JUDET),colour = "red",size = 3.15,data = judete)+
   scale_fill_manual(values = cols.mean,labels = c("<= 30 Sep","10 Oct","20 Oct","31 Oct","10 Nov","20 Nov","30 Nov","10 Dec","20 Dec","31 Dec", ">= 1 Ian"),  name = "")+
@@ -79,11 +78,11 @@ pc1 <- ggplot() +
         legend.key = element_rect(color = "gray", fill = "black"),
         #panel.background = element_rect(fill = "#E4E5E9"),#EAF7FA
         panel.border = element_rect(colour = "black", fill = "transparent"))+
-  annotation_scale(location = "bl", style = "ticks", size = 1)+
+  #annotation_scale(location = "bl", style = "ticks", size = 1)+
   #annotation_custom(grob)+
-  facet_wrap(~indicator, nrow =3, ncol = 3)
+  facet_wrap(~indicator, nrow =3, ncol = 2)
 
-png(paste0(drive_z,"png/prima_zi_medie_strat_zapada_decenial_1961-2020",".png"), width =1800, height = 1400, res =220 )
+png(paste0(drive_z,"png/prima_zi_medie_strat_zapada_decenial_1961-2020",".png"), width =1600, height = 1600, res =220 )
 pc1
 dev.off()
 system(paste0("convert -trim"," " ,drive_z,"/png/prima_zi_medie_strat_zapada_decenial_1961-2020",".png " ,drive_z, "/png/prima_zi_medie_strat_zapada_decenial_1961-2020",".png"))
@@ -145,15 +144,15 @@ pc1 <- ggplot() +
   geom_sf(data = granite, color = "black", fill = "lightgrey", size = 0.1)+
   
   geom_sf(aes(geometry = geometry), data = filter(loc,NUMELOC %in% c("BUCURESTI")),pch = 20,  size = .5, show.legend = F)+
-  geom_sf(aes(geometry = geometry), data = filter(loc,NUMELOC!="BUCURESTI"),pch = 20, bg = "black", size = .2, show.legend = F)+
-  geom_sf_text(mapping = aes(label = NUMELOC), data = loc, nudge_x = -.1, nudge_y = .089, size = 1.)+
+  geom_sf(aes(geometry = geometry), data = filter(loc,NUMELOC!="BUCURESTI"),pch = 20, bg = "black", size = .5, show.legend = F)+
+  geom_sf_text(mapping = aes(label = NUMELOC), data = loc, nudge_x = -.1, nudge_y = .089, size = 1.2)+
   
   #geom_sf_text(data = filter(ctrs,name_ro !="Slovacia"), aes(label = name_ro), size = 3.5 ,fontface="italic")+
   coord_sf(xlim = c(20,29.9), ylim = c(43.5, 48.3), expand = F)+
   scale_x_discrete(expand = c(0, 0)) +
   scale_y_discrete(expand = c(0, 0)) +
   scale_fill_manual(values = cols.mean,labels = c("<= 1 Feb","20 Feb", "1 Mar","20 Mar","1 Apr","10 Apr","20 Apr","30 Apr","10 Mai","20 Mai","30 Mai","10 Iun","20 Iun","> 20 Iun"),  name = "")+
-  annotation_scale(location = "bl", style = "ticks", size = .5)+
+
   labs(x = "",y= "")+
   
   theme_bw()+
@@ -165,12 +164,12 @@ pc1 <- ggplot() +
         legend.key = element_rect(color = "gray", fill = "black"),
         #panel.background = element_rect(fill = "#E4E5E9"),#EAF7FA
         panel.border = element_rect(colour = "black", fill = "transparent"))+
-  annotation_scale(location = "bl", style = "ticks", size = .5)+
-  annotation_custom(grob)+
-  facet_wrap(~indicator, nrow =3, ncol = 3)
+
+  #annotation_custom(grob)+
+  facet_wrap(~indicator, nrow =3, ncol = 2)
 
 
-  png(paste0(drive_z,"png/ultima_zi_medie_strat_zapada_decadal_1961-2020.png"), width =1800, height = 1400, res =220 )
+  png(paste0(drive_z,"png/ultima_zi_medie_strat_zapada_decadal_1961-2020.png"), width =1600, height = 1600, res =220 )
   pc1
   dev.off()
   system(paste0("convert -trim"," " ,drive_z,"/png/ultima_zi_medie_strat_zapada_decadal_1961-2020.png " ,drive_z, "/png/ultima_zi_medie_strat_zapada_decadal_1961-2020.png"))

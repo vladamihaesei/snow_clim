@@ -64,9 +64,9 @@ pc1 <- ggplot() +
           legend.background = element_rect(fill = "white"))+
   #annotation_scale(location = "bl", style = "ticks", size = .5)+
   #annotation_custom(grob)+
-  facet_wrap(~indicator, nrow =3, ncol = 3)
+  facet_wrap(~indicator, nrow =3, ncol = 2)
 
-png(paste0(drive_z,"png/zile_ninsoare_decenial_anual_1961-2020.png"), width =1800, height = 1400, res =220 )
+png(paste0(drive_z,"png/zile_ninsoare_decenial_anual_1961-2020.png"), width =1600, height = 1800, res =220 )
 pc1
 dev.off()
 system(paste0("convert -trim"," " ,drive_z,"/png/zile_ninsoare_decenial_anual_1961-2020.png " ,drive_z, "/png/zile_ninsoare_decenial_anual_1961-2020.png"))

@@ -1,5 +1,4 @@
 library(dplyr)
-
 t1 <- read.csv(paste0(drive_z,"tab_export/zile_ninsoare_1961-2020.csv"))
 t1 <- t1 %>% pivot_longer(-c(Data,CODGE,NUME,Z,Lat,Lon), names_to = "indicator")
 st <- c(1961,1971,1981,1991,2001,2011)

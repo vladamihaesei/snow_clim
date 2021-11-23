@@ -53,9 +53,9 @@ pc1 <- ggplot() +
   #geom_sf(data = ctrs, color = "black", fill = "lightgrey", size = 0.1)+
   geom_sf(data = granite, color = "black", fill = "lightgrey", size = 0.1)+
   
-  geom_sf(aes(geometry = geometry), data = filter(loc,NUMELOC %in% c("BUCURESTI")),pch = 20,  size = .5, show.legend = F)+
-  geom_sf(aes(geometry = geometry), data = filter(loc,NUMELOC!="BUCURESTI"),pch = 20, bg = "black", size = .2, show.legend = F)+
-  geom_sf_text(mapping = aes(label = NUMELOC), data = loc, nudge_x = -.1, nudge_y = .089, size = 1.)+
+  geom_sf(aes(geometry = geometry), data = filter(loc,NUMELOC %in% c("BUCURESTI")),pch = 20,  size = .6, show.legend = F)+
+  geom_sf(aes(geometry = geometry), data = filter(loc,NUMELOC!="BUCURESTI"),pch = 20, bg = "black", size = .4, show.legend = F)+
+  geom_sf_text(mapping = aes(label = NUMELOC), data = loc, nudge_x = -.1, nudge_y = .089, size = 1.3)+
   
   #geom_sf_text(data = filter(ctrs,name_ro !="Slovacia"), aes(label = name_ro), size = 3.5 ,fontface="italic")+
   coord_sf(xlim = c(20,29.9), ylim = c(43.5, 48.3), expand = F)+
@@ -75,10 +75,10 @@ pc1 <- ggplot() +
         legend.key = element_rect(color = "gray", fill = "black"),
         #panel.background = element_rect(fill = "#E4E5E9"),#EAF7FA
         panel.border = element_rect(colour = "black", fill = "transparent"))+
-  annotation_scale(location = "bl", style = "ticks", size = .2)+
+
   #annotation_custom(grob)+
-  facet_wrap(~indicator, nrow =3, ncol = 3)
-png(paste0(drive_z,"png/prima_zi_medie_ninsoare_decalat_1961-2020.png"), width =1800, height = 1400, res =220 )
+  facet_wrap(~indicator, nrow =3, ncol = 2)
+png(paste0(drive_z,"png/prima_zi_medie_ninsoare_decalat_1961-2020.png"), width =1600, height = 1800, res =220 )
 pc1
 dev.off()
 system(paste0("convert -trim"," " ,drive_z,"/png/prima_zi_medie_ninsoare_decalat_1961-2020.png " ,drive_z, "/png/prima_zi_medie_ninsoare_decalat_1961-2020.png"))
@@ -138,9 +138,9 @@ pc1 <- ggplot() +
   #geom_sf(data = ctrs, color = "black", fill = "lightgrey", size = 0.1)+
   geom_sf(data = granite, color = "black", fill = "lightgrey", size = 0.1)+
   
-  geom_sf(aes(geometry = geometry), data = filter(loc,NUMELOC %in% c("BUCURESTI")),pch = 20,  size = .5, show.legend = F)+
-  geom_sf(aes(geometry = geometry), data = filter(loc,NUMELOC!="BUCURESTI"),pch = 20, bg = "black", size = .2, show.legend = F)+
-  geom_sf_text(mapping = aes(label = NUMELOC), data = loc, nudge_x = -.1, nudge_y = .089, size = 1.)+
+  geom_sf(aes(geometry = geometry), data = filter(loc,NUMELOC %in% c("BUCURESTI")),pch = 20,  size = .6, show.legend = F)+
+  geom_sf(aes(geometry = geometry), data = filter(loc,NUMELOC!="BUCURESTI"),pch = 20, bg = "black", size = .3, show.legend = F)+
+  geom_sf_text(mapping = aes(label = NUMELOC), data = loc, nudge_x = -.1, nudge_y = .089, size = 1.2)+
   
   #geom_sf_text(data = filter(ctrs,name_ro !="Slovacia"), aes(label = name_ro), size = 3.5 ,fontface="italic")+
   coord_sf(xlim = c(20,29.9), ylim = c(43.5, 48.3), expand = F)+
@@ -161,9 +161,9 @@ pc1 <- ggplot() +
         panel.border = element_rect(colour = "black", fill = "transparent"))+
   #annotation_scale(location = "bl", style = "ticks", size = .5)+
   #annotation_custom(grob)+
-  facet_wrap(~indicator, nrow =3, ncol = 3)
+  facet_wrap(~indicator, nrow =3, ncol = 2)
 
-png(paste0(drive_z,"png/ultima_zi_medie_ninsoare_decalat_1961-2020.png"), width =1800, height = 1400, res =220 )
+png(paste0(drive_z,"png/ultima_zi_medie_ninsoare_decalat_1961-2020.png"), width =1600, height = 1800, res =230 )
 pc1
 dev.off()
 system(paste0("convert -trim"," " ,drive_z,"/png/ultima_zi_medie_ninsoare_decalat_1961-2020.png " ,drive_z, "/png/ultima_zi_medie_ninsoare_decalat_1961-2020.png"))
