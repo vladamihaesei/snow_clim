@@ -38,6 +38,12 @@ granite <- read_sf(paste0(drive_z,"shp/granite_masca.shp"))
 
 ### scrire sursa
 
+masca <- read_sf(paste0(drive_z,"shp/romania2/romania_masca_2020_bun.shp"))%>%st_transform(4326)
+
+## judete
+judete <- read_sf(paste0(drive_z,"shp/romania2/judete.shp"))%>%st_transform(4326)%>%group_by()%>%summarise()
+
+
 grob <- grobTree(textGrob("©MeteoRomania 2021", x=0.011,  y=0.062, hjust=0,
                           gp = gpar(col="black", fontsize=8.5, fontface="italic")))
 
