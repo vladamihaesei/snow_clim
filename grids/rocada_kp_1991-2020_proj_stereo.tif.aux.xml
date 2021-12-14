@@ -1,0 +1,14 @@
+<PAMDataset>
+  <PAMRasterBand band="1">
+    <CategoryNames>
+      <Category></Category>
+      <Category>BSk</Category>
+      <Category>Cfa</Category>
+      <Category>Cfb</Category>
+      <Category>Csa</Category>
+      <Category>Dfb</Category>
+      <Category>Dfc</Category>
+      <Category>ET</Category>
+    </CategoryNames>
+  </PAMRasterBand>
+</PAMDataset>
