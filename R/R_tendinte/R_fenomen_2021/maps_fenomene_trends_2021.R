@@ -11,22 +11,23 @@ library(RColorBrewer)
 
 source("R/cale_legenda_vectors.R")
 
+ws.prov <- read.csv(paste0(drive_z,"tab/ws_climatetools_provincii_NAomit.csv"))
 tabs <- list.files(path = paste0(drive_z,"tab_export"),pattern = "_2021.csv", full.names = T)
 tabs <- grep("BRUMA",tabs, invert = T, value = T )
 
 for (n in 1:length(tabs)){
   
-
   print(tabs[n])
-  nume <- strsplit(tabs[n],"/|_|.csv")[[1]][14]
+  nume <- strsplit(tabs[n],"/|_|.csv")[[1]][16]
   print(nume)
   t <- read.csv(tabs[n])
   t <- as.data.frame(t)
   t <- na.omit(t)
+
   head(t)
   
   #### BRUMA &GROSZ & NINSOARE
-
+  
   t_trend <- t %>%
     group_by(cod,nume) %>% # we group by name and cod to perform the calculation in each station
     summarise(slope.prima = sens.slope(prima_zi_jul_decalat)$estimates *10,
@@ -35,8 +36,10 @@ for (n in 1:length(tabs)){
               sign.ultima = mk.test(ultima_zi_jul_decalat)$p.value)
   #t_trend$slope.prima_plus <- t_trend$slope.prima
   #t_trend$slope.ultima_plus <- t_trend$slope.ultima
-  t_tr <- merge(x = t_trend, y = ws[5:9], by.x = "nume",by.y = "NUME", all.x = TRUE)
- 
+  names(t_trend)[1] <- "CODGE"
+  t_tr <- t_trend %>% left_join(ws.prov[c(3,4,5,6,8,9,10)])
+  
+  write.csv(t_tr, paste0(drive_z,"tab_export/trend_",nume,"_prima_ultima_1961-2019.csv"), row.names = F)
   
   #t_tr <- st_as_sf(t_tr, coords = c('Lon', 'Lat'), crs = 4326)
   
