@@ -9,7 +9,7 @@ library(lubridate)
 
 t <- read.csv("~/Y/monitorizare/MMOISE/extreme_zapada/outputs/zilnice_grosz_provincie_1880-2020.csv")
 t$dat <- as.Date(t$dat)
-
+t$grosz[t$grosz == 0] <- NA
 
 
 tm <- t %>%na.omit()%>% filter(year(dat) > 1960)%>%group_by(year(dat),cod,Provincie,NUME, Lat,Lon,Z,criter1)%>%summarise(groszm = mean(grosz))

@@ -7,8 +7,10 @@ library(cowplot)
 library(ggthemes)
 
 t <- read.csv("~/Y/monitorizare/MMOISE/extreme_zapada/outputs/zilnice_grosz_provincie_1880-2020.csv")
-# elimina Fundulea si Sulina
 
+t$grosz[t$grosz == 0] <- NA
+
+### 1949/3/22 Brasov eroare 200 
 
 ###
 t$dat <- as.Date(t$dat)
@@ -17,18 +19,24 @@ t$dat <- as.Date(t$dat)
 t1 <- t %>%na.omit()%>% filter(year(dat) > 1960)%>%group_by(cod,year(dat))%>%summarise(groszm = mean(grosz))
 
 
+colnames(t1)[2] <- "Ani"
+t1.anom <- t1%>%group_by(cod)%>% mutate(zpd_61_90 = mean(groszm[Ani>= 1961 & Ani<=1990]),
+                                        zpd_91_20 = mean(groszm[Ani>= 1991 & Ani<=2020]),
+                                        anom = groszm - zpd_61_90)
+
+
 
 statii <- read.csv(file = "~/Y/monitorizare/MMOISE/extreme_zapada/ws_climatetools/ws_climatetools_provincii_NAomit.csv")
 names(statii)[5] <- "cod"
 t1.join <- t1.anom %>%left_join(statii[c(3,5,6,8,9,10)])
 colnames(t1.join)[2] <- "Ani"
 
+t1.join$den_alt <- paste(t1.join$NUME,t1.join$Z,sep = "_")
 
-colnames(t1)[2] <- "Ani"
-t1.anom <- t1%>%group_by(cod)%>% mutate(zpd_61_90 = mean(groszm[Ani>= 1961 & Ani<=1990]),
-                                        zpd_91_20 = mean(groszm[Ani>= 1991 & Ani<=2020]),
-                                        anom = groszm - zpd_61_91)
-
+t1.join.sub  <- t1.join%>%filter(Z<1000)
+t1.join.sub <- t1.join.sub%>%filter(NUME %in% c("Zimnicea", "Calafat", "Craiova", "Giurgiu", "Constanța","Slatina","Drobeta-Turnu Severin","Pitești",
+                                                "Ploiești","București-Filaret","Buzău","Tecuci","Tulcea","Arad","Cluj-Napoca","Piatra Neamț","Iași","Oradea",
+                                                "Brașov","Bacău"))
 
 ###
 rmean <- colorRampPalette(rev(brewer.pal(9,"RdBu")), interpolate="linear")
@@ -38,7 +46,7 @@ lim.mean <- c(-40, 40)
 den <- "cm"
 
 
-g <- ggplot(t1.join.sub, 
+g <- ggplot(t1.join, 
             aes(Ani,den_alt, fill = anom)) +
   geom_tile( size = .35,color = "darkgrey") +
   # geom_tile(data= filter(t1.join.sub,mx =="mx" ),
