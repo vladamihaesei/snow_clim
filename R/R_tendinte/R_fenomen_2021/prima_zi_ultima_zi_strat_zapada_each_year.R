@@ -1,6 +1,9 @@
 library(climatetools)
 library(dplyr)
 
+ws <- read.csv("~/D/2021/Date_doctorat/Zapada_doctorat/tab/ws_statii_koeppen.csv")
+
+
 nebt <- read.csv(paste0(drive_z,"tab/CNEBT_1961-2020.csv"))
 zap_2019 <- read.csv(paste0(drive_z,"tab/GROSZ_1961_2019.csv"))
 zap_2019 <-zap_2019 %>% filter(COD != 428632) 
@@ -27,8 +30,8 @@ t1 <- na.omit(t1)
 summary(t1)
 t1$DAT <- as.Date(t1$DAT)
 cods <- unique(zap_2019$COD)
-dww <- NULL
 
+dww <- NULL
 for (i in 1:length(cods)) {
   
   print(ws$NUME[ws$CODGE %in% cods[i]])
@@ -79,17 +82,21 @@ for (i in 1:length(cods)) {
   di <- data.frame(nume = ws$NUME[ws$CODGE %in% cods[i]],
                    cod = cods[i],
                    Alt = ws$Z[ws$CODGE %in% cods[i]], 
-                   Lat = ws$Lat[ws$CODGE %in% cods[i]],Lon = ws$Lon[ws$CODGE %in% cods[i]],
+                   Lat = ws$Lat[ws$CODGE %in% cods[i]],
+                   Lon = ws$Lon[ws$CODGE %in% cods[i]],
+                   Category = ws$ex.category[ws$CODGE %in% cods[i]],
+                   Criter1 = ws$Criter1[ws$CODGE %in% cods[i]],
+                   Criter2 = ws$Criter2[ws$CODGE %in% cods[i]],
+                   Criter3 = ws$Criter3[ws$CODGE %in% cods[i]],
                    Start_year = min(ani),End_year = max(ani),Length_year = length(ani),
                    zfi)
   dww <- rbind(dww,di)
-  
   
 }
 
 dww <- dww[order(dww$nume),]
 dww
-write.csv(dww,  paste0(drive_z,"tab_export/prima_ultima_zi_fen_",numeorig,"_eaach_year_1961-2020",".csv"), row.names=F)
+write.csv(dww,  paste0(drive_z,"tab_export/prima_ultima_zi_fen_",numeorig,"_each_year_1961-2020_koeppen",".csv"), row.names=F)
 
 
 

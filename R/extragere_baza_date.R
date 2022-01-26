@@ -32,10 +32,10 @@ dat2 <- "2020-12-31 23:00:00"
 
 #channel<- odbcConnect(dsn="ORACLE2",believeNRows=F)
 channel <- odbcConnect("ORACLE2", uid = "dezvoltare", pwd = "zed#$345")
-t1 <-paste("SELECT CLIMALU.COD,CLIMALU.DAT, CLIMALU.TEMP_MDMN FROM CLIMA.CLIMALU CLIMALU WHERE  ((CLIMALU.DAT>={ts '", dat1,"'} And CLIMALU.DAT<={ts '",dat2,"'})) ORDER BY  CLIMALU.DAT")
+t1 <-paste("SELECT CLIMALU.COD,CLIMALU.DAT, CLIMALU.PREC_TOTL FROM CLIMA.CLIMALU CLIMALU WHERE  ((CLIMALU.DAT>={ts '", dat1,"'} And CLIMALU.DAT<={ts '",dat2,"'})) ORDER BY  CLIMALU.DAT")
 t1 <- sqlQuery(channel,t1,as.is = T)
 odbcClose(channel)
 #t1 <- read.csv("Tab/Agraasigurari_202007/1-75_Precipitatiilunare2015.csv") TEMP_MDMX TEMP_MDMN
 
-write.csv(t1,paste0(drive_z,"tab/TEMP_MDMN_1961-2020.csv"), row.names = F)
+write.csv(t1,paste0(drive_z,"tab/PREC_TOTL_1961-2020.csv"), row.names = F)
 

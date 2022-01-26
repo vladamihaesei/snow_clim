@@ -57,7 +57,6 @@ h1
 
 write.xlsx(as.data.frame(h1), "~/D/2021/Date_doctorat/Zapada_doctorat/tab_export/excels/corelati.xlsx")
 
-
 ggplot(cor) +
   aes(x = ultima_zi_jul_corect, y = TEMP_MDMX) +
   geom_point(colour = Criter1) +

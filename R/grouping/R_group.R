@@ -9,15 +9,15 @@ t1 <- read.csv( "~/D/2021/Date_doctorat/Zapada_doctorat/tab/ws_climatetools_prov
 kpn <- terra:: rast("grids/rocada_kp_1991-2020_proj_stereo.tif")
 crs(kpn) <- "+init=epsg:3844"
 
-newproj1 <- "+proj=longlat +datum=WGS84 +no_defs"
+#newproj1 <- "+proj=longlat +datum=WGS84 +no_defs"
 
-kpn.pr <- terra::project(kpn, newproj1)
+#kpn.pr <- terra::project(kpn, newproj1)
 
-coordinates(t1) <- ~Lon+Lat
+coordinates(t1) <- ~X+Y
 t1.sf <- st_as_sf(t1)
 
 #t1$ex <- exactextractr::exact_extract(kpn.pr,t1)
-t1.sf$ex <-terra::extract(kpn.pr,vect(t1.sf))
+t1.sf$ex <-terra::extract(kpn,vect(t1.sf))
 tt <- as.data.frame(t1.sf)
 
 
@@ -33,7 +33,7 @@ Criter2 = case_when(Z <= 500~ "≤ 500 m",
                  Z > 500 & Z <= 1000 ~ "500-1000 m",
                  Z > 1000 & Z <= 1500~ "1000-1500 m",
                  Z > 1500 & Z <= 2000~ "1500-2000 m",
-                 Z > 2000 & Z <= 1500~ "2000-2500 m",
+                 Z > 2000 & Z <= 2500~ "2000-2500 m",
                  Z > 2500~ "> 2500 m"
                  
 ),
@@ -47,9 +47,10 @@ Criter3 = case_when(Z <= 300~ "≤ 300 m",
                  Z > 2200~ "> 2200 m")
 )
 
+
 tt[12:15]<- NULL
 
-write.csv(tt,paste0(drive_z,"tab_export/ws_statii_koeppen.csv"))
+write.csv(tt,paste0(drive_z,"tab/ws_statii_koeppen.csv"),row.names = F)
 
 
 
