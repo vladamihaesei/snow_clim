@@ -4,7 +4,7 @@ library(climatetools)
 library(data.table)
 
 ws.prov <- read.csv(paste0(drive_z,"tab/ws_statii_koeppen.csv"))
-tabs <- list.files(path = paste0(drive_z,"tab_export"),pattern = "_eaach_year_1961-2020.csv", full.names = T)
+tabs <- list.files(path = paste0(drive_z,"tab_export"),pattern = "_each_year_1961-2020_koeppen.csv", full.names = T)
 tabs <- grep("BRUMA|zile_",tabs, invert = T, value = T )
 
 

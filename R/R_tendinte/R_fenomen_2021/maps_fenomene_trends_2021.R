@@ -12,9 +12,9 @@ source("R/cale_legenda_vectors.R")
 source("R/hillshade.R")
 
 ws.prov <- read.csv(paste0(drive_z,"tab/ws_statii_koeppen.csv"))
-tabs <- list.files(path = paste0(drive_z,"tab_export"),pattern = "1961-2020.csv", full.names = T)
+tabs <- list.files(path = paste0(drive_z,"tab_export"),pattern = "_each_year_1961-2020_koeppen.csv", full.names = T)
 tabs <- grep("BRUMA|zile_",tabs, invert = T, value = T )
-tabs <- tabs[1:2]
+
 
 for (n in 1:length(tabs)){
   
@@ -39,26 +39,6 @@ for (n in 1:length(tabs)){
   names(t_trend)[1] <- "CODGE"
   
   t_tr <- t_trend %>% left_join(ws.prov[c(3,4,5,6,8,9,10,13,14,15,16)])
-  t_tr[3:4] <-  round(t_tr[3:4],3)
-  write.csv(t_tr, paste0(drive_z,"tab_export/trend_",nume,"_prima_ultima_1961-2020.csv"), row.names = F)
-  
-  #t_tr <- st_as_sf(t_tr, coords = c('Lon', 'Lat'), crs = 4326)
-  
-  ############### grouping for criter 1 and criter 2 koeppen 
-  names(t)[2] <- "CODGE"
-  
-  t.join <- t%>% left_join(ws.prov[c(3,4,5,6,8,9,10,13,14,15,16)])
-  
-  t_trend_kp <- t.join %>%
-    group_by(ex.category, Criter2) %>% # we group by name and cod to perform the calculation in each station
-    summarise(slope.prima = sens.slope(prima_zi_jul_decalat)$estimates *10,
-              sign.prima = mk.test(prima_zi_jul_decalat)$p.value,
-              slope.ultima = sens.slope(ultima_zi_jul_decalat)$estimates *10,
-              sign.ultima = mk.test(ultima_zi_jul_decalat)$p.value)
- 
-  t_trend_kp[3:6] <- round(t_trend_kp[3:6],3)
-  write.csv(t_trend_kp, paste0(drive_z,"tab_export/trend_",nume,"_prima_ultima_1961-2020_grouping_koeppen.csv"), row.names = F)
-  
   
   kl <- ggplot() + 
     

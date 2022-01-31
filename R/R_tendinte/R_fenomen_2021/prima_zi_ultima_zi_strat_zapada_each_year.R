@@ -1,5 +1,6 @@
 library(climatetools)
 library(dplyr)
+library(lubridate)
 
 ws <- read.csv("~/D/2021/Date_doctorat/Zapada_doctorat/tab/ws_statii_koeppen.csv")
 
@@ -11,7 +12,6 @@ zap_2019 <-zap_2019 %>% filter(COD != 428632)
 zap_2019 <- zap_2019 %>% filter(COD != 509940) 
 
 t1 <- read.csv(paste0(drive_z,"tab/GROSZ_1961_2020.csv"))
-
 #t1 <- t %>% left_join(nebt, by = c("COD", "DAT"))
 numeorig <- names(t1)[3]
 colnames(t1)[3] <- "ZAPADA"
@@ -49,7 +49,7 @@ for (i in 1:length(cods)) {
     t3 <- t2 %>% dplyr::filter(DAT %in% seq(as.Date(paste0(ani[j],"-08-01")), as.Date(paste0(ani[j+1],"-07-31")), "days"))
     
     # elimina anul daca nu ai suficiente zile în funcție de an (bisect)
-    an.prag <- ifelse(lubridate::leap_year(ani[j]), 366, 365)
+    an.prag <- ifelse(lubridate::leap_year(ani[j+1]), 366, 365)
     if (nrow(t3) < an.prag) next
     t3 <- t3 %>% mutate(julian = seq(1:length(DAT)))
     
@@ -77,7 +77,6 @@ for (i in 1:length(cods)) {
     
     zfi<- rbind(zfi,cb)
   } 
-  
   
   di <- data.frame(nume = ws$NUME[ws$CODGE %in% cods[i]],
                    cod = cods[i],
